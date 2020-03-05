@@ -23,7 +23,7 @@ public class Ground : MonoBehaviour
     //Dipanggil ketika game object bersentuhan dengan game object yang lain
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Membuat burung mati ketika bersentuhan dengan game object ini
+        //Membuat Bird mati ketika bersentuhan dengan game object ini
         if (bird != null && !bird.IsDead())
         {
             bird.Dead();
@@ -33,10 +33,10 @@ public class Ground : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Melakukan pengecekan jika burung null atau belu mati
+        //Melakukan pengecekan jika Bird null atau belu mati
         if (bird == null || (bird != null && !bird.IsDead()))
         {
-            //Membuat pipa bergerak kesebelah kiri dengan kecepatan dari variable speed
+            //Membuat Pipe bergerak kesebelah kiri dengan kecepatan dari variable speed
             transform.Translate(Vector3.left * speed * Time.deltaTime, Space.World);
         }
     }

@@ -7,14 +7,13 @@ using UnityEngine.UI;
 public class Bird : MonoBehaviour
 {
     //Global Variables
-    [SerializeField] private float upForce = 100;
-    [SerializeField] public int score;
+    public int score; // Score dibuat public agar bisa diakses oleh Pipe sebagai syarat mulai gerakan naik turun
+
     [SerializeField] private Text scoreText;
+    [SerializeField] private PewPew pewpew; // Object PewPew yang ditembakkan dari Bird
+    [SerializeField] private float upForce = 100;
     [SerializeField] private bool isDead;
-
     [SerializeField] private UnityEvent OnJump, OnDead, OnAddPoint;
-
-    [SerializeField] private PewPew pewpew;
 
     private Rigidbody2D rigidBody2d;
     private Animator animator;
@@ -25,7 +24,7 @@ public class Bird : MonoBehaviour
         return isDead;
     }
 
-    //Membuat Burung Mati
+    //Membuat Bird Mati
     public void Dead()
     {
         //Pengecekan jika belum mati dan value OnDead tidak sama dengan Null
@@ -40,15 +39,16 @@ public class Bird : MonoBehaviour
 
     }
 
+    // Fungsi membuat Bird melompat
     void Jump()
     {
         //Mengecek rigidbody null atau tidak
         if (rigidBody2d)
         {
-            //menghentikan kecepatan burung ketika jatuh
+            //menghentikan kecepatan Bird ketika jatuh
             rigidBody2d.velocity = Vector2.zero;
 
-            //Menambahkan gaya ke arah sumbu y agar burung meloncat
+            //Menambahkan gaya ke arah sumbu y agar Bird meloncat
             rigidBody2d.AddForce(new Vector2(0, upForce));
         }
 
@@ -60,23 +60,26 @@ public class Bird : MonoBehaviour
         }
     }
 
+    //Fungsi untuk Bird menembakkan PewPew
     void Shoot()
     {
 
-        //menduplikasi game object pipeUp dan menempatkan posisinya sama dengan game object ini tetapi dirotasi 180 derajat
+        //menduplikasi game object PewPew
         PewPew newPewpew = Instantiate(pewpew, transform.position, Quaternion.identity);
 
-        //Mengaktifkan game object newPipeUp
+        //Mengaktifkan game object PewPew
         newPewpew.gameObject.SetActive(true);
 
     }
 
+    //Fungsi deteksi tabrakan Bird dengan objek lain
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //menghentikan Animasi Burung ketika bersentukan dengan object lain
+        //menghentikan Animasi Bird ketika bersentukan dengan object lain
         animator.enabled = false;
     }
 
+    // Fungsi menambahkan score saat melalui Point
     public void AddScore(int value)
     {
         //Menambahkan Score value
@@ -109,16 +112,19 @@ public class Bird : MonoBehaviour
         //Melakukan pengecekan jika belum mati dan klik kiri pada mouse
         if (!isDead && Input.GetMouseButtonDown(0))
         {
-            //Burung meloncat
+            //Bird meloncat
             Jump();
         }
 
-        //Melakukan pengecekan jika belum mati dan klik kanan pada mouse
+        //Melakukan pengecekan jika belum mati dan klik kanan pada mouse untuk nembak
         if (!isDead && Input.GetMouseButtonDown(1))
         {
+            // Mengecek apakah scene yang aktif adalah Main, sebab pada scene Opening seharusnya
+            // tidak bisa menembakkan PewPew
             if (gameObject.scene.name == "Main")
             {
-                //Burung nembak (ciecie)
+                //Bird nembak (ciecie)
+                //Bird bisa nembak tanpa batas
                 Shoot();
             }
             

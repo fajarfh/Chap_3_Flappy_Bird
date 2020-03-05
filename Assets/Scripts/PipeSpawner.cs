@@ -7,11 +7,11 @@ public class PipeSpawner : MonoBehaviour
     //Global variables
     [SerializeField] private Bird bird;
     [SerializeField] private Pipe pipeUp, pipeDown;
-    [SerializeField] private float spawnInterval = 1;
-    [SerializeField] public float holeSize = 1f;
-    [SerializeField] private float maxMinOffset = 1;
-
     [SerializeField] private Point point;
+    [SerializeField] private float spawnInterval = 1;
+    [SerializeField] private float holeSize = 1f;
+    [SerializeField] private float holeMax = 2f;
+    [SerializeField] private float maxMinOffset = 1;
 
     //variable penampung coroutine yang sedang berjalan
     private Coroutine CR_Spawn;
@@ -48,23 +48,27 @@ public class PipeSpawner : MonoBehaviour
         //Mengaktifkan game object newPipeUp
         newPipeDown.gameObject.SetActive(true);
 
-        float realHole = Random.Range(holeSize, 2.5f * holeSize);
+        //Membuat ukuran hole menjadi random dengan nilai minimum holeSize
+        //Dan nilai maksimum holeSize
+        float realHole = Random.Range(holeSize, holeMax);
 
-        //menempatkan posisi dari pipa yang sudah terbentuk agar memiliki lubang di tengahnya
-        //newPipeUp.transform.position += Vector3.up * (holeSize / 2);
-        //newPipeDown.transform.position += Vector3.down * (holeSize / 2);
+        //menempatkan posisi dari Pipe yang sudah terbentuk agar memiliki lubang di tengahnya
+        //posisi Pipe disesuaikan ukuran hole yang random
         newPipeUp.transform.position += Vector3.up * (realHole / 2);
         newPipeDown.transform.position += Vector3.down * (realHole / 2);
 
-        //menempatkan posisi pipa yang telah dibentuk agar posisinya menyesuaikan dengan fungsi Sin
+        //menempatkan posisi Pipe yang telah dibentuk agar posisinya menyesuaikan dengan fungsi Sin
         float y = maxMinOffset * Mathf.Sin(Time.time);
         newPipeUp.transform.position += Vector3.up * y;
         newPipeDown.transform.position += Vector3.up * y;
 
+        //menempatkan Point pada lubang antar Pipe
+        //ukurannya berdasarkan ukuran lubang, tapi ada manipulasi lagi
         Point newPoint = Instantiate(point, transform.position, Quaternion.identity);
         newPoint.gameObject.SetActive(true);
-        //newPoint.SetSize(holeSize);
         newPoint.SetSize(realHole);
+
+        //menempatkan Point sesuai fungsi Sin
         newPoint.transform.position += Vector3.up * y;
        
     }
@@ -73,13 +77,13 @@ public class PipeSpawner : MonoBehaviour
     {
         while (true)
         {
-            //Jika Burung mati maka menghentikan pembuatan Pipa Baru
+            //Jika Bird mati maka menghentikan pembuatan Pipe Baru
             if (bird.IsDead())
             {
                 StopSpawn();
             }
 
-            //Membuat Pipa Baru
+            //Membuat Pipe Baru
             SpawnPipe();
 
             //Menunggu beberapa detik sesuai dengan spawn interval
@@ -94,9 +98,4 @@ public class PipeSpawner : MonoBehaviour
         StartSpawn();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

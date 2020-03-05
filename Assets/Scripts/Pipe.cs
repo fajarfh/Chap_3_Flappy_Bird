@@ -2,33 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Pipe : MonoBehaviour
 {
 
     //Global variable
     [SerializeField] private Bird bird;
     [SerializeField] private float speed = 1;
+    [SerializeField] private int groovyScore = 5;
 
-    //   [SerializeField] private PipeSpawner pipeSpawn;
+    //GLobal variable untuk mengatur properti Dynamic Pipe
+    [SerializeField] private float pipeMass = 0.1f;
+    [SerializeField] private float pipeGravityScale = 0.1f;
+
+    //Variable untuk membantu animasi naik turun
     private float limity;
     private float limiVar;
     private float yspeedUp, yspeedDown;
+
+    //Variable untuk membantu animasi saat ditembak
     private bool isShot;
     private Animator animator;
 
-
+    //Fungsi animasi naik turun. Fungsi ini sepertinya masih buggy karena 
+    //kadang-kadang Pipe stuck dan tidak naik turun tapi bergetar
+    //Pipe yang sudah dilewati Bird saat syarat score terpenuhi juga ikut naik turun
     private void UpDownAnim()
     {
+        // Saat kena tembak, animasi naik turun tidak akan jalan
         if (!isShot) { 
+            
+            //Kalau nama Object PipeUp maka animasinya naik turun, kalau PipeDown turun naik
             if (name.Contains("Up"))
             {
 
+                //Menggerakkan Pipe
                 transform.Translate(Vector3.up * yspeedUp * Time.deltaTime, Space.World);
+
+                //Menyimpan posisi Pipe saat ini
                 float currenty = transform.position.y;
 
+                //Saat Pipe melebihi limity (posisi awal) ATAU limiVar (batas atas posisi)
+                //Arah gerak berubah
                 if ((currenty >= limiVar) || (currenty <= limity))
                 {
+
                     yspeedUp = -yspeedUp;
 
                 }
@@ -37,9 +54,14 @@ public class Pipe : MonoBehaviour
             else if (name.Contains("Down"))
             {
 
+                //Menggerakkan Pipe
                 transform.Translate(Vector3.down * yspeedDown * Time.deltaTime, Space.World);
+                
+                //Menyimpan posisi Pipe saat ini
                 float currenty = transform.position.y;
 
+                //Saat Pipe melebihi limity (posisi awal) ATAU limiVar (batas bawah posisi)
+                //Arah gerak berubah
                 if ((currenty <= limiVar) || (currenty >= limity))
                 {
                     yspeedDown = -yspeedDown;
@@ -50,19 +72,18 @@ public class Pipe : MonoBehaviour
         }
     }
 
+    // Fungsi ini dipanggil dari animator Pipe agar Pipe hancur saat animasi tertembak selesai
     private void Destruction()
     {
         Destroy(gameObject);
     }
 
     //Membuat Bird mati ketika bersentuhan dan menjatuhkannya ke ground jika mengenai di atas collider
+    //Juga untuk membuat Pipe hancur saat berentuhan dengan PewPew (ditembak)
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Bird bird = collision.gameObject.GetComponent<Bird>();
-
         PewPew pewpew = collision.gameObject.GetComponent<PewPew>();
-
-       // Rigidbody2D pewpewrig = collision.gameObject.GetComponent<Rigidbody2D>();
 
         //Pengecekan Null value
         if (bird)
@@ -78,27 +99,28 @@ public class Pipe : MonoBehaviour
                 
             }
 
-            //Burung Mati
+            //Bird Mati
             bird.Dead();
 
-        } else if (pewpew)
+        } else if (pewpew) // Pengecekan Null value saat ditembak PewPew
         {
+            // Ubah status tertembak
             isShot = true;
 
-          //  ContactPoint2D lastcontactpoint = collision.GetContact(0);
-            //Vector2 contactPoint = new Vector2(lastcontactpoint., lastcontactpoint.tangentImpulse);
-
+            //Mengubah rigidbody2D dari Pipe menjadi Dynamic agar tertarik gravitasi
             Rigidbody2D rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-
             rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-            rigidbody2D.mass = 0.1f;
-            rigidbody2D.gravityScale = 0.1f;
 
-            //print(pewpewrig.velocity);
-            //print(contactPoint);
-            // rigidbody2D.AddForce(contactPoint * 10);     
+            //Tuning mass dan gravity scale di sini agar animasi hancur jadi lebih enak
+            rigidbody2D.mass = pipeMass;
+            rigidbody2D.gravityScale = pipeGravityScale;
+
+            //Mendorong Pipe searah tembakan PewPew
+            //Inginnya rotasi Pipe berubah sesuai posisi kontak tertembaknya
+            //Tapi belum tahu caranya
             rigidbody2D.AddForce(Vector2.right * 10);
-            //Mendapatkan komponent Collider pada game object
+
+            //Mematikan collider Pipe saat hancur sehingga Pipe yang hancur tidak bisa melukai Bird
             Collider2D collider = GetComponent<Collider2D>();
 
             if (collider)
@@ -108,6 +130,7 @@ public class Pipe : MonoBehaviour
 
             }
 
+            //Menjalankan animasi Fade Out dari Pipe
             animator.enabled = true;
 
         }
@@ -116,6 +139,8 @@ public class Pipe : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Mengubah batas atas atau batas bawah serta kecepatan pada animasi naik turun
+        //tergantung apakah PipeUp atau PipeDown
         if (name.Contains("Up"))
         {
             limity = transform.position.y;
@@ -138,16 +163,16 @@ public class Pipe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Melakukan pengecekan jika burung belum mati
+        //Melakukan pengecekan jika Bird belum mati
         if (!bird.IsDead())
         {
-            //Membuat pipa bergerak kesebelah kiri dengan kecepatan tertentu
+            //Membuat Pipe bergerak kesebelah kiri dengan kecepatan tertentu
             transform.Translate(Vector3.left * speed * Time.deltaTime, Space.World);
-            //transform.Translate(Vector3.up * speed * Time.deltaTime, Space.World);
 
+            //Mengecek score dan menggerakkan Pipe naik turun setelah mencapai score groovyScore
             int scoreCheck = bird.score;
             
-            if ( scoreCheck >= 3 )
+            if ( scoreCheck >= groovyScore )
             {
                 UpDownAnim();
             }

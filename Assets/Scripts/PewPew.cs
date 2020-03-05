@@ -6,10 +6,16 @@ using UnityEngine;
 public class PewPew : MonoBehaviour
 {
 
-    [SerializeField] private float PewPewSpeed;
+    //Global Variable
+    [SerializeField] private float PewPewSpeed = 75f;
     [SerializeField] private Bird bird;
+    
+    //PewPew menggunakan rigidbody Dynamic dengan coordinate Y dan Z di freeze 
+    //Karena hanya bisa jalan kalau seperti itu. namun mungkin seharusnya kinematic
+    //tapi tidak bisa jalan.
     private Rigidbody2D rigidBody2d;
 
+    // Jika PewPew menabrak Pipe, Object PewPew hancur
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -29,7 +35,7 @@ public class PewPew : MonoBehaviour
         //Mendapatkan component ketika game baru berjalan
         rigidBody2d = GetComponent<Rigidbody2D>();
 
-        //Menambahkan gaya ke arah sumbu x agar PewPew terlontar
+        //Menambahkan gaya ke arah sumbu x agar PewPew terlontar saat muncul
         rigidBody2d.AddForce(Vector2.right * PewPewSpeed);
 
      }
@@ -37,6 +43,7 @@ public class PewPew : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Jika Bird mati, PewPew yang sudah tertembak akan hilang/hancur
         if (bird.IsDead())
         {
             Destroy(gameObject);

@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -353,7 +353,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -1243,9 +1243,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6547dd36e7eaaa44f89dfe8464f0a79e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upForce: 100
   score: 0
   scoreText: {fileID: 1351657411}
+  pewpew: {fileID: 1982994290}
+  upForce: 100
   isDead: 0
   OnJump:
     m_PersistentCalls:
@@ -1325,7 +1326,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  pewpew: {fileID: 1982994290}
 --- !u!82 &858289411
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1471,10 +1471,11 @@ MonoBehaviour:
   bird: {fileID: 858289410}
   pipeUp: {fileID: 976292962}
   pipeDown: {fileID: 2138433906}
+  point: {fileID: 1496917799}
   spawnInterval: 1.5
   holeSize: 1
+  holeMax: 2
   maxMinOffset: 1
-  point: {fileID: 1496917799}
 --- !u!1 &976292961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1510,6 +1511,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bird: {fileID: 858289410}
   speed: 1
+  groovyScore: 5
+  pipeMass: 0.1
+  pipeGravityScale: 0.1
 --- !u!212 &976292963
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1905,6 +1909,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1351657409}
   m_CullTransparentMesh: 0
+--- !u!1 &1477621512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1477621515}
+  - component: {fileID: 1477621514}
+  m_Layer: 0
+  m_Name: Ceiling
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!61 &1477621514
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477621512}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!4 &1477621515
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477621512}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalScale: {x: 11, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1496917798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2345,7 +2406,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2017144777500713511, guid: 436c12a90e3a0cf4cb4317195ec9fdae,
     type: 3}
   m_Color: {r: 1, g: 0.4166274, b: 0, a: 1}
@@ -2407,7 +2468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85fe55562c04e748a371fd3f406d378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PewPewSpeed: 50
+  PewPewSpeed: 100
   bird: {fileID: 858289410}
 --- !u!1 &2041132310
 GameObject:
@@ -2625,6 +2686,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bird: {fileID: 858289410}
   speed: 1
+  groovyScore: 5
+  pipeMass: 0.1
+  pipeGravityScale: 0.1
 --- !u!212 &2138433907
 SpriteRenderer:
   m_ObjectHideFlags: 0
