@@ -78,32 +78,12 @@ public class Pipe : MonoBehaviour
         Destroy(gameObject);
     }
 
-    //Membuat Bird mati ketika bersentuhan dan menjatuhkannya ke ground jika mengenai di atas collider
-    //Juga untuk membuat Pipe hancur saat berentuhan dengan PewPew (ditembak)
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Bird bird = collision.gameObject.GetComponent<Bird>();
         PewPew pewpew = collision.gameObject.GetComponent<PewPew>();
-
-        //Pengecekan Null value
-        if (bird)
+        if (pewpew) // Pengecekan Null value saat ditembak PewPew
         {
-            //Mendapatkan komponent Collider pada game object
-            Collider2D collider = GetComponent<Collider2D>();
 
-            //Melakukan pengecekan Null variabel atau tidak
-            if (collider)
-            {
-                //Menonaktifkan collider
-                collider.enabled = false;
-                
-            }
-
-            //Bird Mati
-            bird.Dead();
-
-        } else if (pewpew) // Pengecekan Null value saat ditembak PewPew
-        {
             // Ubah status tertembak
             isShot = true;
 
@@ -133,7 +113,36 @@ public class Pipe : MonoBehaviour
             //Menjalankan animasi Fade Out dari Pipe
             animator.enabled = true;
 
+            print("what");
         }
+    }
+
+    //Membuat Bird mati ketika bersentuhan dan menjatuhkannya ke ground jika mengenai di atas collider
+    //Juga untuk membuat Pipe hancur saat berentuhan dengan PewPew (ditembak)
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Bird bird = collision.gameObject.GetComponent<Bird>();
+        //PewPew pewpew = collision.gameObject.GetComponent<PewPew>();
+
+        //Pengecekan Null value
+        if (bird)
+        {
+            //Mendapatkan komponent Collider pada game object
+            Collider2D collider = GetComponent<Collider2D>();
+
+            //Melakukan pengecekan Null variabel atau tidak
+            if (collider)
+            {
+                //Menonaktifkan collider
+                collider.enabled = false;
+                
+            }
+
+            //Bird Mati
+            bird.Dead();
+
+        } 
+
     }
 
     // Start is called before the first frame update

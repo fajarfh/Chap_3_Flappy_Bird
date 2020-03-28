@@ -16,7 +16,7 @@ public class PewPew : MonoBehaviour
     private Rigidbody2D rigidBody2d;
 
     // Jika PewPew menabrak Pipe, Object PewPew hancur
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
 
         Pipe pipe = collision.gameObject.GetComponent<Pipe>();
