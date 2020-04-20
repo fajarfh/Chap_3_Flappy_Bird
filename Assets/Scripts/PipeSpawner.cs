@@ -12,9 +12,13 @@ public class PipeSpawner : MonoBehaviour
     [SerializeField] private float holeSize = 1f;
     [SerializeField] private float holeMax = 2f;
     [SerializeField] private float maxMinOffset = 1;
+    [SerializeField] private int groovyScore = 5;
 
     //variable penampung coroutine yang sedang berjalan
     private Coroutine CR_Spawn;
+
+    //cek score
+    private int checkScore;
         
     void StartSpawn()
     {
@@ -47,6 +51,18 @@ public class PipeSpawner : MonoBehaviour
 
         //Mengaktifkan game object newPipeUp
         newPipeDown.gameObject.SetActive(true);
+
+        checkScore = bird.score;
+
+        if (checkScore >= groovyScore)
+        {
+            newPipeUp.isGroove = true;
+            newPipeDown.isGroove = true;
+        } else
+        {
+            newPipeUp.isGroove = false;
+            newPipeDown.isGroove = false;
+        }
 
         //Membuat ukuran hole menjadi random dengan nilai minimum holeSize
         //Dan nilai maksimum holeSize

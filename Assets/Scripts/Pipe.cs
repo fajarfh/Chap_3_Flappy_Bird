@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,11 +9,13 @@ public class Pipe : MonoBehaviour
     //Global variable
     [SerializeField] private Bird bird;
     [SerializeField] private float speed = 1;
-    [SerializeField] private int groovyScore = 5;
+    //[SerializeField] private int groovyScore = 5;
 
     //GLobal variable untuk mengatur properti Dynamic Pipe
     [SerializeField] private float pipeMass = 0.1f;
     [SerializeField] private float pipeGravityScale = 0.1f;
+
+    [HideInInspector] public Boolean isGroove;
 
     //Variable untuk membantu animasi naik turun
     private float limity;
@@ -179,9 +182,9 @@ public class Pipe : MonoBehaviour
             transform.Translate(Vector3.left * speed * Time.deltaTime, Space.World);
 
             //Mengecek score dan menggerakkan Pipe naik turun setelah mencapai score groovyScore
-            int scoreCheck = bird.score;
+            //int scoreCheck = bird.score;
             
-            if ( scoreCheck >= groovyScore )
+            if (isGroove)
             {
                 UpDownAnim();
             }
